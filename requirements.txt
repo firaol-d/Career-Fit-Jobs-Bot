@@ -1,0 +1,9 @@
+python-telegram-bot[job-queue]>=20.0
+telethon>=1.24.0
+supabase>=0.5.8
+python-dotenv>=0.19.0
+telegraph>=2.1.0
+asyncio
+
+
+

@@ -1,0 +1,26 @@
+name: Send User Updates
+
+on:
+  schedule:
+    - cron: '30 */8 * * *'  # Runs at 00:30, 08:30, 16:30 UTC (30 minutes after scraping)
+  workflow_dispatch:
+
+jobs:
+  send_updates:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt
+    - name: Send updates to users
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      run: python src/send_updates.py

@@ -1,0 +1,31 @@
+name: Bot Runner
+
+on:
+  schedule:
+    # Run every 3 hours except during sleep time (UTC+3 timezone)
+    - cron: '0 3-22/3 * * *'  # Runs at 3,6,9,12,15,18,21 UTC
+  workflow_dispatch:
+
+jobs:
+  run_bot:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run bot
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      run: |
+        PYTHONPATH=src python -c "from database import process_pending_users; process_pending_users()"
+        python src/main.py &
+        sleep 7200  # Run for 2 hours
+        kill $!
