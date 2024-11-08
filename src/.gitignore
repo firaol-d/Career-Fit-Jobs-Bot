@@ -28,3 +28,9 @@ dist/
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Ignore specific files
+last_send.txt
+last_run.txt
+last_scrape.txt
+sessions.session
+

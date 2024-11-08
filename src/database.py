@@ -2,6 +2,7 @@ import os
 from supabase import create_client, Client
 import logging
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -17,15 +18,25 @@ def init_db():
     # This function might not be necessary if Supabase handles schema creation
     logger.info("Database connection initialized")
 
+def user_exists(user_id: int) -> bool:
+    try:
+        response = supabase.table('users').select('user_id').eq('user_id', user_id).execute()
+        return bool(response.data)
+    except Exception as e:
+        logger.error(f"Error checking user existence {user_id}: {e}")
+        return False
+
 def add_user(user_id: int) -> bool:
     try:
-        response = supabase.table('users').insert({"user_id": user_id}).execute()
-        if len(response.data) > 0:
-            logger.info(f"User {user_id} added successfully")
+        if not user_exists(user_id):
+            supabase.table('users').insert({
+                'user_id': user_id,
+                'preferences': [],
+                'created_at': datetime.now().isoformat()
+            }).execute()
+            logger.info(f"Successfully added new user {user_id}")
             return True
-        else:
-            logger.warning(f"Failed to add user {user_id}")
-            return False
+        return False
     except Exception as e:
         logger.error(f"Error adding user {user_id}: {e}")
         return False
@@ -39,12 +50,11 @@ def update_user_preferences(user_id: int, preferences: list):
 
 def get_user_preferences(user_id: int) -> list:
     try:
-        response = supabase.table('users').select("preferences").eq("user_id", user_id).execute()
-        if len(response.data) > 0:
+        response = supabase.table('users').select('preferences').eq('user_id', user_id).execute()
+        if response.data and response.data[0]['preferences'] is not None:
             return response.data[0]['preferences']
-        else:
-            logger.warning(f"No preferences found for user {user_id}")
-            return []
+        logger.info(f"No preferences found for user {user_id}, returning empty list")
+        return []
     except Exception as e:
         logger.error(f"Error getting preferences for user {user_id}: {e}")
         return []

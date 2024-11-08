@@ -1,29 +1,52 @@
-name: Job Update
+name: Job Update Scraper
 
 on:
   schedule:
-    - cron: '0 */8 * * *'  # Runs at 00:00, 08:00, 16:00 UTC
+    - cron: '0 4 * * *'   # 7:00 AM EAT
+    - cron: '0 8 * * *'   # 10:00 AM EAT
+    - cron: '0 12 * * *'  # 1:00 PM EAT
+    - cron: '0 16 * * *'  # 4:00 PM EAT
+    - cron: '0 22 * * *'  # 10:00 PM EAT
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  update:
+  scrape:
+    name: Scrape Job Updates
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
+        cache: 'pip'
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install python-telegram-bot
         pip install -r requirements.txt
-    - name: Run job update
+    - name: Keep workflow active
+      run: |
+        git pull origin main
+        date > last_scrape.txt
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add last_scrape.txt
+        git commit -m "Update last scrape timestamp"
+        git push origin main
+    - name: Run scraper
       env:
+        PYTHONPATH: src
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
         TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
         TELEGRAM_PHONE_NUMBER: ${{ secrets.TELEGRAM_PHONE_NUMBER }}
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      run: python src/scraper.py && python src/message_formatter.py
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: python src/scraper.py

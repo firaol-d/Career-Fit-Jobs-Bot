@@ -14,11 +14,19 @@ def load_keywords():
     with open(keywords_path, 'r') as f:
         return [line.strip().lower() for line in f]
 
+def get_last_run_time():
+    try:
+        with open('last_scrape.txt', 'r') as f:
+            return datetime.strptime(f.read().strip(), '%a %d %b %Y %H:%M:%S %Z')
+    except Exception as e:
+        logger.error(f"Error reading last run time: {e}")
+        return datetime.now(timezone.utc) - timedelta(days=1)  # Default to 1 day ago if error occurs
+
 async def scrape_messages(client, channel):
     messages = []
-    eight_hours_ago = datetime.now(timezone.utc) - timedelta(hours=8)
+    last_run_time = get_last_run_time()  # Get the last run time
     async for message in client.iter_messages(channel, limit=100):
-        if message.date < eight_hours_ago:
+        if message.date < last_run_time:  # Only scrape messages after the last run time
             break
         messages.append(message)
     return messages
