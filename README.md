@@ -34,12 +34,12 @@ Your personal job hunting assistant that brings opportunities right to your Tele
 
 1. 📋Clone the repository
 
-    git clone https://github.com/Dagmawi-M/Career-Fit-Job-bot.git
-    cd Career-Fit-Job-bot
+    - `git clone https://github.com/Dagmawi-M/Career-Fit-Job-bot.git`
+    - `cd Career-Fit-Job-bot`
 
 2. 📦 Install dependencies
 
-    pip install -r requirements.txt
+    `pip install -r requirements.txt`
 
 3. 🔑 Configure environment variables
 
@@ -57,15 +57,15 @@ Your personal job hunting assistant that brings opportunities right to your Tele
 
 1. Start the scraper:
 
-    python src/scraper.py
+   `python src/scraper.py`
 
 2. Run the bot:
 
-    python src/main.py
+    `python src/main.py`
 
 3. Send updates:
 
-    python src/send_updates.py
+    `python src/send_updates.py`
 
 #### Option 2: GitHub Actions (Recommended)
 
