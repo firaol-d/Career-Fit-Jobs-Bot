@@ -10,6 +10,7 @@ Carrer-Fit-Job-bot/
 │ ├── config.py
 │ ├── database.py
 │ ├── message_formatter.py
+│ ├──.env
 │ └── policy.py
 ├── tests/
 │ └── test_.py
@@ -17,9 +18,9 @@ Carrer-Fit-Job-bot/
 │ └── workflows/
 │ └── job_update.yml
 ├── requirements.txt
+├── procfile
 ├── README.md
-├── DOCUMENTATION.md
-└── .env
+└── DOCUMENTATION.md
 
 ## 🔧 Core Components
 
@@ -43,11 +44,60 @@ Carrer-Fit-Job-bot/
 - Formats messages
 - Sends updates to users
 
+## 🚀 Deployment on Heroku
+
+### Steps to Deploy
+
+1. **Create a Heroku Account**: Sign up at [Heroku](https://www.heroku.com).
+
+2. **Install the Heroku CLI**: Follow the instructions [here](https://devcenter.heroku.com/articles/heroku-cli) to install the Heroku Command Line Interface.
+
+3. **Login to Heroku**: Open your terminal and run:
+
+    ```bash
+    heroku login
+    ```
+
+4. **Create a New Heroku App**:
+
+    ```bash
+    heroku create your-app-name
+    ```
+
+5. **Set Environment Variables**: Set your environment variables on Heroku:
+
+    ```bash
+    heroku config:set TELEGRAM_BOT_TOKEN=your_token_here
+    heroku config:set TELEGRAM_API_ID=your_api_id_here
+    heroku config:set TELEGRAM_API_HASH=your_api_hash_here
+    heroku config:set SUPABASE_URL=your_supabase_url_here
+    heroku config:set SUPABASE_KEY=your_supabase_key_here
+    heroku config:set HEROKU_API_KEY=your_heroku_api_key_here
+    ```
+
+6. **Deploy Your Code**: Push your code to Heroku:
+
+    ```bash
+    git push heroku main  # or your branch name
+    ```
+
+7. **Scale Your Dynos**: Ensure your worker dyno is running:
+
+    ```bash
+    heroku ps:scale worker=1 --app your-app-name
+    ```
+
+8. **Monitor Logs**: Check the logs to ensure everything is running smoothly:
+
+    ```bash
+    heroku logs --tail --app your-app-name
+    ```
+
 ## 🔄 Workflow
 
 1. 🕒 **Scheduling**
    - Scraper runs every 8 hours
-   - Updates sent 30 minutes after scraping
+   - Updates sent 10 minutes after scraping
    - Bot runs continuously with 2-hour active periods
 
 2. 🎯 **Job Matching**

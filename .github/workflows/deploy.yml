@@ -1,0 +1,84 @@
+name: Deploy and Scheduled Jobs
+
+on:
+  workflow_dispatch:  
+  push:
+    branches:
+      - main  # Change this to your default branch if it's not 'main'
+  schedule:
+    # Job updates schedule
+    - cron: '0 4 * * *'   # 7:00 AM EAT
+    - cron: '0 8 * * *'   # 10:00 AM EAT
+    - cron: '0 12 * * *'  # 1:00 PM EAT
+    - cron: '0 16 * * *'  # 4:00 PM EAT
+    - cron: '0 22 * * *'  # 10:00 PM EAT
+    # Send updates schedule (10 minutes after job updates)
+    - cron: '10 4 * * *'  # 7:10 AM EAT
+    - cron: '10 8 * * *'  # 10:10 AM EAT
+    - cron: '10 12 * * *' # 1:10 PM EAT
+    - cron: '10 16 * * *' # 4:10 PM EAT
+    - cron: '10 22 * * *' # 10:10 PM EAT
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'  # Specify your Python version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+          echo "machine git.heroku.com" >> ~/.netrc
+          echo "  login heroku" >> ~/.netrc
+          echo "  password $HEROKU_API_KEY" >> ~/.netrc
+          git push heroku main  # Change 'main' if your branch is different
+
+  run_job_updates:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'  # Run only on schedule
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Job Updates
+        run: python src/scraper.py  # Ensure this path is correct
+
+  run_send_updates:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'  # Run only on schedule
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Send Updates
+        run: python src/send_updates.py # Ensure this path is correct
+
+  run_main_bot:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'  # Run only on push to main
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Main Bot
+        run: python src/main.py  # Ensure this path is correct

@@ -6,7 +6,7 @@ Your personal job hunting assistant that brings opportunities right to your Tele
 
 🔍 Smart job scraping from Ethiopian Telegram channels
 🎯 Personalized job matching based on your preferences
-📬 Automated updates 3 times daily
+📬 Automated updates 5 times daily
 📱 Easy-to-use Telegram interface
 
 ## 🚀 Try it Now!
@@ -32,14 +32,18 @@ Your personal job hunting assistant that brings opportunities right to your Tele
 
 ### 2. Environment Setup
 
-1. 📋Clone the repository
+1. 📋 Clone the repository
 
-    - `git clone https://github.com/Dagmawi-M/Career-Fit-Job-bot.git`
-    - `cd Career-Fit-Job-bot`
+    ```bash
+    git clone https://github.com/Dagmawi-M/Career-Fit-Job-bot.git
+    cd Career-Fit-Job-bot
+    ```
 
 2. 📦 Install dependencies
 
-    `pip install -r requirements.txt`
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 3. 🔑 Configure environment variables
 
@@ -50,38 +54,61 @@ Your personal job hunting assistant that brings opportunities right to your Tele
   - `TELEGRAM_API_HASH`
   - `SUPABASE_URL`
   - `SUPABASE_KEY`
+  - `HEROKU_API_KEY` (for deployment)
+  - `HEROKU_APP_NAME` (for deployment)
 
-4. 🏃‍♂️Running the Bot
+### 3. Deploying to Heroku
 
-#### Option 1: Manual Running
+1. **Create a Heroku Account**: If you don't have one, sign up at [Heroku](https://www.heroku.com).
 
-1. Start the scraper:
+2. **Install the Heroku CLI**: Follow the instructions [here](https://devcenter.heroku.com/articles/heroku-cli) to install the Heroku Command Line Interface.
 
-   `python src/scraper.py`
+3. **Login to Heroku**: Open your terminal and run:
 
-2. Run the bot:
+    ```bash
+    heroku login
+    ```
 
-    `python src/main.py`
+4. **Create a New Heroku App**:
 
-3. Send updates:
+    ```bash
+    heroku create your-app-name
+    ```
 
-    `python src/send_updates.py`
+5. **Set Environment Variables**: Set your environment variables on Heroku:
 
-#### Option 2: GitHub Actions (Recommended)
+    ```bash
+    heroku config:set TELEGRAM_BOT_TOKEN=your_token_here
+    heroku config:set TELEGRAM_API_ID=your_api_id_here
+    heroku config:set TELEGRAM_API_HASH=your_api_hash_here
+    heroku config:set SUPABASE_URL=your_supabase_url_here
+    heroku config:set SUPABASE_KEY=your_supabase_key_here
+    heroku config:set HEROKU_API_KEY=your_heroku_api_key_here
+    ```
 
-1. Fork the repository
-2. Add your secrets to GitHub repository settings
-3. Enable GitHub Actions
-4. The bot will run automatically according to:
-   - `bot_runner.yml`: Runs every 3 hours (3,6,9,12,15,18,21 UTC)
-   - `job_update.yml`: Scrapes jobs every 8 hours
-   - `send_updates.yml`: Sends updates 30 minutes after scraping
+6. **Deploy Your Code**: Push your code to Heroku:
+
+    ```bash
+    git push heroku main  # or your branch name
+    ```
+
+7. **Scale Your Dynos**: Ensure your worker dyno is running:
+
+    ```bash
+    heroku ps:scale worker=1 --app your-app-name
+    ```
+
+8. **Monitor Logs**: Check the logs to ensure everything is running smoothly:
+
+    ```bash
+    heroku logs --tail --app your-app-name
+    ```
 
 ## 💡 How it Works
 
 1. 🤖 Scraper collects jobs from Ethiopian Telegram channels
 2. 🎯 Bot matches jobs with user preferences
-3. 📬 Sends personalized updates via Telegraph and Telegram
+3. 📬 Sends personalized updates via Telegram
 4. 🧹 Auto-cleans database to maintain performance
 
 ## 📝 License

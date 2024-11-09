@@ -106,6 +106,10 @@ def escape_markdown(text):
                .replace('.', '\\.') \
                .replace('!', '\\!')
 
+def send_updates_function():
+    # Your logic for sending updates
+    print("Sending updates...")  # Replace with actual logic
+
 if __name__ == "__main__":
     import asyncio
     asyncio.run(send_job_updates())
