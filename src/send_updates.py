@@ -109,7 +109,7 @@ def escape_markdown(text):
                .replace('!', '\\!')
 
 async def scheduler():
-    schedule_times = [(4, 10), (8, 10), (12, 10), (16, 10), (22, 10)]  # (hour, minute) pairs
+    schedule_times = [(5, 10), (9, 10), (13, 10), (17, 10), (23, 10)]  # (hour, minute) pairs
 
     while True:
         now = datetime.now(timezone.utc)

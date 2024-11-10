@@ -18,7 +18,8 @@ def load_keywords():
 def get_last_run_time():
     try:
         with open('last_scrape.txt', 'r') as f:
-            return datetime.strptime(f.read().strip(), '%a %d %b %Y %H:%M:%S %Z')
+            # Parse the time as timezone-aware UTC
+            return datetime.strptime(f.read().strip(), '%a %d %b %Y %H:%M:%S %Z').replace(tzinfo=timezone.utc)
     except Exception as e:
         logger.error(f"Error reading last run time: {e}")
         return datetime.now(timezone.utc) - timedelta(days=1)  # Default to 1 day ago if error occurs
@@ -29,9 +30,11 @@ def update_last_run_time():
 
 async def scrape_messages(client, channel):
     messages = []
-    last_run_time = get_last_run_time()  # Get the last run time
+    last_run_time = get_last_run_time()  # Get the last run time, timezone-aware
     async for message in client.iter_messages(channel, limit=100):
-        if message.date < last_run_time:  # Only scrape messages after the last run time
+        # Ensure message.date is also timezone-aware by setting to UTC if not already
+        message_date = message.date if message.date.tzinfo else message.date.replace(tzinfo=timezone.utc)
+        if message_date < last_run_time:  # Only scrape messages after the last run time
             break
         messages.append(message)
     return messages
@@ -68,7 +71,7 @@ async def main():
         logger.info("Scraping process completed.")
 
 async def scheduler():
-    schedule_times = [(4, 0), (8, 0), (12, 0), (16, 0), (22, 0)]  # (hour, minute) pairs
+    schedule_times = [(5, 0), (9, 0), (13, 0), (17, 0), (23, 0)]  # (hour, minute) pairs
 
     while True:
         now = datetime.now(timezone.utc)
