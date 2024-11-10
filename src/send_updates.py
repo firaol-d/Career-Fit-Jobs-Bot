@@ -3,6 +3,8 @@ from telegram.ext import Application
 from config import TOKEN
 from database import get_all_users, get_job_listings, get_user_preferences, clear_job_listings
 from message_formatter import create_job_update
+from datetime import datetime, timezone
+import asyncio
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -106,10 +108,22 @@ def escape_markdown(text):
                .replace('.', '\\.') \
                .replace('!', '\\!')
 
-def send_updates_function():
-    # Your logic for sending updates
-    print("Sending updates...")  # Replace with actual logic
+async def scheduler():
+    schedule_times = [(4, 10), (8, 10), (12, 10), (16, 10), (22, 10)]  # (hour, minute) pairs
+
+    while True:
+        now = datetime.now(timezone.utc)
+        current_time = (now.hour, now.minute)
+
+        logger.info(f"Checking time: current time is {now.strftime('%H:%M:%S')} UTC.")
+
+        if current_time in schedule_times:
+            logger.info(f"Time matched schedule at {now.strftime('%H:%M:%S')} UTC. Starting the job update process.")
+            await send_job_updates()  # Run send_job_updates() if it's the right time
+            await asyncio.sleep(60)  # Wait a minute to avoid re-running within the same minute
+        else:
+            logger.info("No match with scheduled times. Waiting before the next check.")
+            await asyncio.sleep(30)  # Check the time every 30 seconds
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(send_job_updates())
+    asyncio.run(scheduler())

@@ -1,11 +1,12 @@
-import asyncio
 import os
+import logging
 from telethon import TelegramClient
 from config import API_ID, API_HASH, PHONE_NUMBER, CHANNELS
 from database import add_job_listing
-from datetime import datetime, timedelta, timezone
-import logging
+from datetime import datetime, timezone, timedelta
+import asyncio
 
+# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,10 @@ def get_last_run_time():
         logger.error(f"Error reading last run time: {e}")
         return datetime.now(timezone.utc) - timedelta(days=1)  # Default to 1 day ago if error occurs
 
+def update_last_run_time():
+    with open('last_scrape.txt', 'w') as f:
+        f.write(datetime.now(timezone.utc).strftime('%a %d %b %Y %H:%M:%S %Z'))
+
 async def scrape_messages(client, channel):
     messages = []
     last_run_time = get_last_run_time()  # Get the last run time
@@ -34,7 +39,6 @@ async def scrape_messages(client, channel):
 async def process_messages(messages, channel):
     for message in messages:
         try:
-            # Remove the '@' symbol from the channel name for the message link
             channel_name = channel.lstrip('@')
             job_listing = {
                 'channel': channel,
@@ -48,6 +52,7 @@ async def process_messages(messages, channel):
             logger.error(f"Error processing message from {channel}, message ID: {message.id}: {e}")
 
 async def main():
+    logger.info("Starting the scraping process...")
     client = TelegramClient('session', API_ID, API_HASH)
     await client.start(phone=PHONE_NUMBER)
 
@@ -55,15 +60,29 @@ async def main():
         for channel in CHANNELS:
             messages = await scrape_messages(client, channel)
             await process_messages(messages, channel)
+        update_last_run_time()
     except Exception as e:
         logger.error(f"Error in scraping process: {e}")
     finally:
         await client.disconnect()
-# src/job_updates.py
+        logger.info("Scraping process completed.")
 
-def job_updates_function():
-    # Your logic for job updates
-    print("Collecting job updates...")  # Replace with actual logic
+async def scheduler():
+    schedule_times = [(4, 0), (8, 0), (12, 0), (16, 0), (22, 0)]  # (hour, minute) pairs
 
-if __name__ == '__main__':
-    asyncio.run(main())
+    while True:
+        now = datetime.now(timezone.utc)
+        current_time = (now.hour, now.minute)
+
+        logger.info(f"Checking time: current time is {now.strftime('%H:%M:%S')} UTC.")
+
+        if current_time in schedule_times:
+            logger.info(f"Time matched schedule at {now.strftime('%H:%M:%S')} UTC. Starting the scraping process.")
+            await main()  # Run main() if it's the right time
+            await asyncio.sleep(60)  # Wait a minute to avoid re-running within the same minute
+        else:
+            logger.info("No match with scheduled times. Waiting before the next check.")
+            await asyncio.sleep(30)  # Check the time every 30 seconds
+
+if __name__ == "__main__":
+    asyncio.run(scheduler())

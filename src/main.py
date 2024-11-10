@@ -5,12 +5,12 @@ from telegram.ext import Application
 from bot import setup_handlers
 from config import TOKEN
 from database import init_db
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 import time
 
 # Import your update scripts
-from send_updates import send_updates_function  # Adjust the import based on your function
-from scraper import job_updates_function    # Adjust the import based on your function
+# from send_updates import send_updates_function  # Adjust the import based on your function
+# from scraper import job_updates_function    # Adjust the import based on your function
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,6 +29,9 @@ async def main():
     # Set up handlers
     setup_handlers(application)
     
+    # Start the scheduler
+    # start_scheduler()
+
     try:
         await start_bot(application)
         logger.info("Bot started. Press Ctrl+C to stop.")
@@ -41,16 +44,16 @@ async def main():
         await application.stop()
         await application.shutdown()
 
-def start_scheduler():
-    scheduler = BackgroundScheduler()
+# def start_scheduler():
+#     scheduler = BackgroundScheduler()
 
-    # Schedule job_updates.py to run at the specified times
-    scheduler.add_job(job_updates_function, 'cron', hour='4,8,12,16,22')  # Adjust as needed
-    # Schedule send_updates.py to run 10 minutes after job_updates.py
-    scheduler.add_job(send_updates_function, 'cron', minute='10', hour='4,8,12,16,22')  # Adjust as needed
+#     # Schedule the job updates function
+#     scheduler.add_job(job_updates_function, 'cron', minute='24', hour='4,10,12,16,22')  # Adjust as needed
+#     # Schedule the send updates function
+#     scheduler.add_job(send_updates_function, 'cron', minute='27', hour='4,10,12,16,22')  # Adjust as needed
 
-    scheduler.start()
-    logging.info("Scheduler started.")
+#     scheduler.start()
+#     logging.info("Scheduler started.")
 
 if __name__ == '__main__':
     try:
