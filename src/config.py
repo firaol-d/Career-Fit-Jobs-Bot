@@ -9,13 +9,16 @@ API_HASH = os.getenv('TELEGRAM_API_HASH')
 PHONE_NUMBER = os.getenv('TELEGRAM_PHONE_NUMBER')
 
 CHANNELS = ['@Maroset', '@freelance_ethio', '@addis_ababa_jobs', '@ethio_job_vacancy1', '@jobs_in_ethio',
-             '@josad_software', '@hahujobs', "@effoyjobs" ]
+             '@josad_software', '@hahujobs', "@effoyjobs", "@harmeejobs", "@Elelanjobs","@shegarjob", "@vacancyforallethio", "@fanajobs"]
 JOB_CATEGORIES = [
-    'Technology', 'Finance', 'Bank', 'Insurance', 'NGO',
-    'Healthcare', 'Education', 'Marketing', 'Sales', 'Human Resources',
-    'Lawyer', 'Engineering', 'Design', 'Media', 'Hospitality',
-    'Specialist', 'Analyst', 'Developer', 'Engineer',
-    'Accountant', 'Auditor', 'Teacher', 'Consultant', 'Manager', 'Director', 'Executive', 'Coordinator'
+    'Finance', 'Bank', 'Insurance', 'NGO', 'Marketing', 'Sales', 'Director',
+    'Human Resources', 'Lawyer', 'Design', 'Media', 'Hospitality', 'Analyst', 'Administrative',
+    'Developer', 'Engineer', 'Accountant', 'Auditor', 'Teacher', 'Consultant', 'Manager',  
+    'Coordinator', 'Operations', 'Customer Service', 'Supply Chain', 'Legal', 'Research', 
+    'Product Management', 'Data Science', 'Cybersecurity', 'Project Management',  
+    'Logistics', 'IT', 'Graphic Design', 'UX/UI Design', 'Communications', 'Assistant',
+    'Salesforce', 'Event Planning', 'Content Creation', 'Public Relations'
+
 ]
 
 SUPABASE_URL = os.getenv('SUPABASE_URL')

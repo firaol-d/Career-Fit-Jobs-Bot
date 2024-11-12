@@ -5,6 +5,7 @@ from database import get_all_users, get_job_listings, get_user_preferences, clea
 from message_formatter import create_job_update
 from datetime import datetime, timezone
 import asyncio
+import re
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -35,7 +36,7 @@ async def send_job_updates():
                         
                         # Format the message
                         message = (
-                            "✨ *Latest Job Matches*\n"
+                            # "✨ *Latest Job Matches*\n"
                             f"{format_summary(matched_jobs)}"
                             "──────────────\n"
                             f"🔍 [View Full Details]({update_url})"
@@ -44,16 +45,27 @@ async def send_job_updates():
                         # Escape the message to prevent Markdown parsing errors
                         message = escape_markdown(message)
                         
-                        try:
-                            await application.bot.send_message(
-                                chat_id=user['user_id'],
-                                text=message,
-                                parse_mode='MarkdownV2',
-                                disable_web_page_preview=False  # Enable instant view
-                            )
-                            logger.info(f"Successfully sent update to user {user['user_id']}")
-                        except Exception as e:
-                            logger.error(f"Failed to send update to user {user['user_id']}: {e}")
+                        while True:
+                            try:
+                                await application.bot.send_message(
+                                    chat_id=user['user_id'],
+                                    text=message,
+                                    parse_mode='MarkdownV2',
+                                    disable_web_page_preview=False  # Enable instant view
+                                )
+                                logger.info(f"Successfully sent update to user {user['user_id']}")
+                                await asyncio.sleep(1)  # Add delay to respect Telegram rate limits
+                                break  # Exit loop if message was sent successfully
+                            except Exception as e:
+                                error_message = str(e)
+                                if "Flood control exceeded" in error_message:
+                                    # Extract the wait time from the error message
+                                    wait_time = int(re.search(r"(\d+) second", error_message).group(1))
+                                    logger.warning(f"Flood control triggered. Waiting for {wait_time} seconds.")
+                                    await asyncio.sleep(wait_time)
+                                else:
+                                    logger.error(f"Failed to send update to user {user['user_id']}: {e}")
+                                    break  # Exit loop if it's another error
                 else:
                     logger.info(f"No preferences found for user {user['user_id']}, skipping.")
         else:
@@ -109,7 +121,7 @@ def escape_markdown(text):
                .replace('!', '\\!')
 
 async def scheduler():
-    schedule_times = [(5, 10), (9, 10), (13, 10), (17, 10), (23, 10)]  # (hour, minute) pairs
+    schedule_times = [(4, 10), (7, 10), (11, 10), (15, 10), (19, 10)]  # (hour, minute) pairs
 
     while True:
         now = datetime.now(timezone.utc)
