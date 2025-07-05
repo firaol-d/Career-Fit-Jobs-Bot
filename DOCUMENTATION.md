@@ -144,5 +144,3 @@ Carrer-Fit-Job-bot/
 - 🤖 AI-powered job matching
 - 📊 Analytics dashboard
 - 💬 User feedback system
-
-Need more details? Contact @cfjsupport on Telegram!
