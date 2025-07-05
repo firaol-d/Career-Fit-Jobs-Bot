@@ -2,9 +2,9 @@ import logging
 import asyncio
 from telegram import Update
 from telegram.ext import Application
-from bot import setup_handlers
-from config import TOKEN
-from database import init_db
+from src.bot import setup_handlers
+from src.config import TOKEN
+from src.database import init_db
 # from apscheduler.schedulers.background import BackgroundScheduler
 import time
 

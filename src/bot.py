@@ -1,10 +1,10 @@
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
-from config import TOKEN, JOB_CATEGORIES
-from database import add_user, update_user_preferences, get_user_preferences, add_pending_user, user_exists
-from policy import get_privacy_policy_url
-from message_formatter import create_job_update, create_promotion_banner
+from src.config import TOKEN, JOB_CATEGORIES
+from src.database import add_user, update_user_preferences, get_user_preferences, add_pending_user, user_exists
+from src.policy import get_privacy_policy_url
+from src.message_formatter import create_job_update, create_promotion_banner
 from telegram.error import BadRequest
 
 logging.basicConfig(level=logging.INFO)

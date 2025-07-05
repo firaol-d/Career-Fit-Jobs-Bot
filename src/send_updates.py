@@ -1,8 +1,8 @@
 import logging
 from telegram.ext import Application
-from config import TOKEN
-from database import get_all_users, get_job_listings, get_user_preferences, clear_job_listings
-from message_formatter import create_job_update
+from src.config import TOKEN
+from src.database import get_all_users, get_job_listings, get_user_preferences, clear_job_listings
+from src.message_formatter import create_job_update
 from datetime import datetime, timezone
 import asyncio
 import re

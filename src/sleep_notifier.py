@@ -2,8 +2,8 @@ import asyncio
 import pytz
 from datetime import datetime
 from telegram.ext import Application
-from database import get_all_users
-from config import TOKEN
+from src.database import get_all_users
+from src.config import TOKEN
 
 async def send_sleep_notification(notification_type: str):
     app = Application.builder().token(TOKEN).build()

@@ -1,8 +1,8 @@
 import os
 import logging
 from telethon import TelegramClient
-from config import API_ID, API_HASH, PHONE_NUMBER, CHANNELS
-from database import add_job_listing
+from src.config import API_ID, API_HASH, PHONE_NUMBER, CHANNELS
+from src.database import add_job_listing
 from datetime import datetime, timezone, timedelta
 import asyncio
 

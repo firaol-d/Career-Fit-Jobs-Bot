@@ -1,5 +1,5 @@
 from telegraph import Telegraph
-from config import JOB_CATEGORIES
+from src.config import JOB_CATEGORIES
 from datetime import datetime
 
 def create_job_update(matched_jobs):
