@@ -54,55 +54,30 @@ Your personal job hunting assistant that brings opportunities right to your Tele
   - `TELEGRAM_API_HASH`
   - `SUPABASE_URL`
   - `SUPABASE_KEY`
-  - `HEROKU_API_KEY` (for deployment)
-  - `HEROKU_APP_NAME` (for deployment)
 
-### 3. Deploying to Heroku
 
-1. **Create a Heroku Account**: If you don't have one, sign up at [Heroku](https://www.heroku.com).
+### 3. Deployment & Scheduling (Render + cron-job.org)
 
-2. **Install the Heroku CLI**: Follow the instructions [here](https://devcenter.heroku.com/articles/heroku-cli) to install the Heroku Command Line Interface.
+- Deploy the bot as a web service on [Render](https://render.com) using FastAPI (`src/server.py`).
+- Scheduled jobs (scraper, send updates) are triggered by [cron-job.org](https://cron-job.org) making HTTP POST requests to your Render endpoints.
+- No paid hosting or GitHub Actions required for scheduling!
 
-3. **Login to Heroku**: Open your terminal and run:
+#### Running Locally
 
-    ```bash
-    heroku login
-    ```
+```bash
+python src/main.py         # Start the bot (for interactive Telegram use)
+uvicorn src.server:app --host 0.0.0.0 --port 8000  # Start FastAPI server for HTTP endpoints
+```
 
-4. **Create a New Heroku App**:
+#### Using Render + cron-job.org
 
-    ```bash
-    heroku create your-app-name
-    ```
+- Deploy your FastAPI app (`src/server.py`) to Render as a web service.
+- Set up cron jobs on cron-job.org to POST to:
+  - `https://<your-render-url>/run-scraper` (for scraping)
+  - `https://<your-render-url>/send-updates` (for sending updates)
+  - Adjust schedule as needed (e.g., every 8 hours for scraping, 10 minutes after for updates).
 
-5. **Set Environment Variables**: Set your environment variables on Heroku:
-
-    ```bash
-    heroku config:set TELEGRAM_BOT_TOKEN=your_token_here
-    heroku config:set TELEGRAM_API_ID=your_api_id_here
-    heroku config:set TELEGRAM_API_HASH=your_api_hash_here
-    heroku config:set SUPABASE_URL=your_supabase_url_here
-    heroku config:set SUPABASE_KEY=your_supabase_key_here
-    heroku config:set HEROKU_API_KEY=your_heroku_api_key_here
-    ```
-
-6. **Deploy Your Code**: Push your code to Heroku:
-
-    ```bash
-    git push heroku main  # or your branch name
-    ```
-
-7. **Scale Your Dynos**: Ensure your worker dyno is running:
-
-    ```bash
-    heroku ps:scale worker=1 --app your-app-name
-    ```
-
-8. **Monitor Logs**: Check the logs to ensure everything is running smoothly:
-
-    ```bash
-    heroku logs --tail --app your-app-name
-    ```
+See `src/server.py` for endpoint details.
 
 ## 💡 How it Works
 

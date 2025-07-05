@@ -44,61 +44,31 @@ Carrer-Fit-Job-bot/
 - Formats messages
 - Sends updates to users
 
-## 🚀 Deployment on Heroku
 
-### Steps to Deploy
+## 🚀 Deployment & Scheduling (Render + cron-job.org)
 
-1. **Create a Heroku Account**: Sign up at [Heroku](https://www.heroku.com).
+### Steps to Automate with Render & cron-job.org
 
-2. **Install the Heroku CLI**: Follow the instructions [here](https://devcenter.heroku.com/articles/heroku-cli) to install the Heroku Command Line Interface.
+1. **Configure Environment Variables**: Set your secrets in Render's dashboard.
+2. **Deploy to Render**: Deploy your FastAPI app (`src/server.py`) as a web service.
+3. **Set Up cron-job.org**: Schedule HTTP POST requests to your endpoints:
+   - `/run-scraper` for scraping jobs
+   - `/send-updates` for sending updates
+   - Adjust schedule as needed (e.g., every 8 hours for scraping, 10 minutes after for updates)
 
-3. **Login to Heroku**: Open your terminal and run:
+### Example Local Run
 
-    ```bash
-    heroku login
-    ```
-
-4. **Create a New Heroku App**:
-
-    ```bash
-    heroku create your-app-name
-    ```
-
-5. **Set Environment Variables**: Set your environment variables on Heroku:
-
-    ```bash
-    heroku config:set TELEGRAM_BOT_TOKEN=your_token_here
-    heroku config:set TELEGRAM_API_ID=your_api_id_here
-    heroku config:set TELEGRAM_API_HASH=your_api_hash_here
-    heroku config:set SUPABASE_URL=your_supabase_url_here
-    heroku config:set SUPABASE_KEY=your_supabase_key_here
-    heroku config:set HEROKU_API_KEY=your_heroku_api_key_here
-    ```
-
-6. **Deploy Your Code**: Push your code to Heroku:
-
-    ```bash
-    git push heroku main  # or your branch name
-    ```
-
-7. **Scale Your Dynos**: Ensure your worker dyno is running:
-
-    ```bash
-    heroku ps:scale worker=1 --app your-app-name
-    ```
-
-8. **Monitor Logs**: Check the logs to ensure everything is running smoothly:
-
-    ```bash
-    heroku logs --tail --app your-app-name
-    ```
+```bash
+python src/main.py         # Start the bot (for Telegram interaction)
+uvicorn src.server:app --host 0.0.0.0 --port 8000  # Start FastAPI server for HTTP endpoints
+```
 
 ## 🔄 Workflow
 
 1. 🕒 **Scheduling**
    - Scraper runs every 8 hours
    - Updates sent 10 minutes after scraping
-   - Bot runs continuously with 2-hour active periods
+   - Bot runs continuously with 2-hour active periods (if run on a VM or locally)
 
 2. 🎯 **Job Matching**
    - Analyzes job descriptions
