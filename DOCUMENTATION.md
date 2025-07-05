@@ -114,5 +114,3 @@ uvicorn src.server:app --host 0.0.0.0 --port 8000  # Start FastAPI server for HT
 - 🤖 AI-powered job matching
 - 📊 Analytics dashboard
 - 💬 User feedback system
-
-Need more details? Contact @cfjsupport on Telegram!

@@ -90,8 +90,4 @@ See `src/server.py` for endpoint details.
 
 MIT License - feel free to use and modify!
 
-## 📞 Support
-
-Need help? Contact:
-- 💬 Telegram: @cfjsupport
 
