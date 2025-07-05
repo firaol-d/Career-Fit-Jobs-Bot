@@ -114,9 +114,3 @@ Your personal job hunting assistant that brings opportunities right to your Tele
 ## 📝 License
 
 MIT License - feel free to use and modify!
-
-## 📞 Support
-
-Need help? Contact:
-- 💬 Telegram: @cfjsupport
-
