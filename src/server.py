@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Response
 import asyncio
 import logging
-from scraper import main as scraper_main
-from send_updates import send_job_updates
+from src.scraper import main as scraper_main
+from src.send_updates import send_job_updates
 
 app = FastAPI()
 
