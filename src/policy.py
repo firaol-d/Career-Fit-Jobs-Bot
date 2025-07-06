@@ -19,7 +19,7 @@ def get_privacy_policy_url():
 <p>Your data is securely stored and not shared with third parties.</p>
 
 <h4>4. Your Rights</h4>
-<p>You can:<br>• Update your preferences anytime<br>• Delete your data using /delete command</p>
+<p>You can:<br>• Update your preferences anytime</p>
 
 <h4>5. Contact</h4>
 <p>Questions? Contact @YourUsername</p>

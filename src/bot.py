@@ -161,8 +161,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "• Afternoon Update: 2:10 PM\n"
         "• Evening Update: 6:10 PM\n"
         "• Night Update: 10:10 PM\n\n"
-        "💡 *Need Help?*\n"
-        "Contact: @cfjsupport"
+        "💡 *Need Help? Want to Hire?*\n"
+        "Contact: @thedudefira"
     )
     await update.message.reply_text(help_text)
 
